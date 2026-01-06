@@ -37,7 +37,7 @@
 
                     debug("準備跳轉");
                     // 2. 請在此填入您的預填連結 (注意最後要接上 =${userId})
-                    const formUrl = `您的預填連結前段=${userId}`;
+                    const formUrl = `https://docs.google.com/forms/d/e/1FAIpQLScX95IAay6ikJEpzeUTr24D8VQxIM_gX6YPUZB4uo5ahKnJLw/viewform?usp=pp_url&entry.229079460=${userId}`;;
                     
                     document.getElementById('msg').innerText = "跳轉中，請稍候...";
                     window.location.replace(formUrl);
