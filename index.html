@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正在載入健身問卷...</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 50px;">
+        <p>正在為您開啟專屬問卷，請稍候...</p>
+    </div>
+
+    <script>
+        async function main() {
+            // 1. 初始化 LIFF (這裡填入您在 LINE Developers 申請到的 LIFF ID)
+            await liff.init({ liffId: "您的_LIFF_ID" });
+
+            if (!liff.isLoggedIn()) {
+                liff.login();
+            } else {
+                // 2. 取得使用者資料
+                const profile = await liff.getProfile();
+                const userId = profile.userId;
+
+                // 3. 您的預填連結 (請把 YOUR_PREFILLED_URL 換成您複製的那串，並確保結尾接上 ${userId})
+                // 例如：https://docs.google.com/forms/d/e/.../viewform?usp=pp_url&entry.123456=${userId}
+                const googleFormUrl = `您的預填連結前段=${userId}`;
+
+                // 4. 跳轉到 Google 表單
+                window.location.href = googleFormUrl;
+            }
+        }
+        main();
+    </script>
+</body>
+</html>
