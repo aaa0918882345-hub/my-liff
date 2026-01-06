@@ -3,35 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>正在載入健身問卷...</title>
+    <title>正在開啟問卷...</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; color: #333; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 2s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #debug { color: #888; font-size: 12px; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <div style="text-align: center; margin-top: 50px;">
-        <p>正在為您開啟專屬問卷，請稍候...</p>
-    </div>
+    <div class="loader"></div>
+    <h2 id="msg">正在連接 LINE 帳號...</h2>
+    <div id="debug"></div>
 
     <script>
-        async function main() {
-            // 1. 初始化 LIFF (這裡填入您在 LINE Developers 申請到的 LIFF ID)
-            await liff.init({ liffId: "您的_LIFF_ID" });
+        const debug = (txt) => { document.getElementById('debug').innerText += txt + " > "; };
+        
+        async function start() {
+            try {
+                debug("初始化");
+                // 1. 請在此填入您的 LIFF ID
+                await liff.init({ liffId: "2008831426-y9CXtNTV" }); 
+                
+                if (!liff.isLoggedIn()) {
+                    debug("引導登入");
+                    liff.login();
+                } else {
+                    debug("取得資料");
+                    document.getElementById('msg').innerText = "正在取得您的 ID...";
+                    const profile = await liff.getProfile();
+                    const userId = profile.userId;
 
-            if (!liff.isLoggedIn()) {
-                liff.login();
-            } else {
-                // 2. 取得使用者資料
-                const profile = await liff.getProfile();
-                const userId = profile.userId;
-
-                // 3. 您的預填連結 (請把 YOUR_PREFILLED_URL 換成您複製的那串，並確保結尾接上 ${userId})
-                // 例如：https://docs.google.com/forms/d/e/.../viewform?usp=pp_url&entry.123456=${userId}
-                const googleFormUrl = `您的預填連結前段=${userId}`;
-
-                // 4. 跳轉到 Google 表單
-                window.location.href = googleFormUrl;
+                    debug("準備跳轉");
+                    // 2. 請在此填入您的預填連結 (注意最後要接上 =${userId})
+                    const formUrl = `您的預填連結前段=${userId}`;
+                    
+                    document.getElementById('msg').innerText = "跳轉中，請稍候...";
+                    window.location.replace(formUrl);
+                }
+            } catch (err) {
+                document.getElementById('msg').innerText = "❌ 發生問題";
+                document.getElementById('debug').style.color = "red";
+                document.getElementById('debug').innerText = "錯誤原因: " + err.message;
             }
         }
-        main();
+        start();
     </script>
 </body>
 </html>
